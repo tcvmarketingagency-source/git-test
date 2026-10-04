@@ -1,5 +1,5 @@
-function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=(process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY);if(!url||!key)return null;return{url:url.replace(/\/$/,''),key}}
-async function request(path:string,init:RequestInit={}){const d=db();if(!d)throw new Error('Supabase server credentials are not configured');const r=await fetch(d.url+'/rest/v1/'+path,{...init,headers:{apikey:d.key,Authorization:'Bearer '+d.key,'Content-Type':'application/json',...(init.headers||{})},cache:'no-store'});if(!r.ok)throw new Error('Supabase '+r.status+': '+await r.text());return r.status===204?null:r.json()}
+import { ventureosConfigured, ventureosRequest } from '@/lib/tenant/rest'
+const request = ventureosRequest
 export async function researchSources(limit=200){return request('ventureos_research_sources?select=*&order=created_at.desc&limit='+Math.min(limit,500))}
 export async function signalByHash(hash:string){const rows=await request('ventureos_signals?select=*&content_hash=eq.'+encodeURIComponent(hash)+'&limit=1');return rows?.[0]??null}
 export async function insertSignal(row:Record<string,unknown>){const [r]=await request('ventureos_signals',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(row)});return r}

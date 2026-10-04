@@ -1,6 +1,6 @@
-function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env['SUPA'+'BASE_SERVICE_ROLE_KEY']||process.env['SUPA'+'BASE_SECRET_KEY'];if(!url||!key)return null;return{url:url.replace(/\/$/,''),key}}
-async function request(path:string,init:RequestInit={}){const d=db();if(!d)throw new Error('Supabase server credentials are not configured');const r=await fetch(d.url+'/rest/v1/'+path,{...init,headers:{apikey:d.key,Authorization:'Bearer '+d.key,'Content-Type':'application/json',...(init.headers||{})},cache:'no-store'});if(!r.ok)throw new Error('Supabase '+r.status+': '+await r.text());return r.status===204?null:r.json()}
-export const configured=()=>!!db()
+import { ventureosConfigured, ventureosRequest } from '@/lib/tenant/rest'
+const request = ventureosRequest
+export const configured=()=>ventureosConfigured()
 export async function product(productId:number){const rows=await request('ventureos_products?select=*&id=eq.'+productId+'&limit=1');return rows?.[0]??null}
 export async function latestRun(productId:number){const rows=await request('ventureos_execution_runs?select=*&product_id=eq.'+productId+'&order=created_at.desc&limit=1');return rows?.[0]??null}
 export async function runByKey(runKey:string){const rows=await request('ventureos_execution_runs?select=*&run_key=eq.'+encodeURIComponent(runKey)+'&limit=1');return rows?.[0]??null}
