@@ -415,3 +415,17 @@
 .settings-row{display:flex;gap:8px;margin-top:12px}.settings-row select{flex:1;height:38px;background:#090c10;color:#eaf0f4;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:0 9px;font-size:9px}.settings-row button{height:38px;padding:0 11px;border:1px solid #5de1ff25;background:#5de1ff0a;color:#bcefff;border-radius:9px;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:8px}
 .security-list{display:grid;gap:1px;margin-top:11px}.security-list>div{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:8px;padding:10px 0;border-top:1px solid rgba(255,255,255,.04)}.security-list span{font-size:9px;color:#87919d}.security-list b{font-size:7px;text-transform:uppercase;letter-spacing:.08em;color:#8be0ad}
 @media(max-width:760px){.auth-grid{grid-template-columns:1fr}.auth-brand{padding:10px 0 0}.auth-brand h1{font-size:42px}.auth-card{padding:22px}.settings-header{display:block}.settings-logout{margin-top:10px}.settings-grid{grid-template-columns:1fr}.settings-wide{grid-column:auto}.settings-row{display:block}.settings-row button{width:100%;justify-content:center;margin-top:8px}}
+
+/* ===== PASSWORDLESS GOOGLE FOUNDER LOGIN ===== */
+.auth-founder{display:flex;align-items:center;gap:10px;padding:10px 11px;margin:0 0 12px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(255,255,255,.02)}
+.auth-founder-avatar{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#fff;color:#111;font-size:12px;font-weight:800}
+.auth-founder b{display:block;color:#d7dfe7;font-size:9px;letter-spacing:0}
+.auth-founder small{display:block;color:#66717d;font-size:7px;margin-top:3px}
+.auth-google{width:100%;height:43px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#f7f8fa;color:#101317;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:10px;font-weight:750;transition:transform .15s ease,box-shadow .15s ease}
+.auth-google:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.auth-google:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.google-glyph{width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#fff;color:#4285f4;font-size:12px;font-weight:900}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0 12px;color:#535d68;font-size:7px;text-transform:uppercase;letter-spacing:.12em}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;background:rgba(255,255,255,.06);flex:1}
+.auth-secondary{width:100%;height:40px;border:1px solid rgba(255,255,255,.07);border-radius:10px;background:#ffffff05;color:#aeb7c0;cursor:pointer;font-size:9px}
+.auth-secondary:hover{background:#ffffff08;color:#dce2e7}
