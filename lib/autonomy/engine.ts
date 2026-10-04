@@ -141,7 +141,7 @@ export async function advanceRun(runKey:string){
     return overview(run.founder_key)
   }
   for(const previous of rows){
-    if(previous.order_index<current.order_index&&previous.status!=='completed'&&previous.status!=='blocked'){
+    if(previous.order_index<current.order_index&&previous.status!=='completed'){
       throw new Error('Autonomous step blocked by '+previous.step_key)
     }
   }
@@ -152,10 +152,10 @@ export async function advanceRun(runKey:string){
   const after=await db.steps(runKey)
   const failed=after.some((x:any)=>x.status==='failed')
   const blocked=after.some((x:any)=>x.status==='blocked')
-  const complete=after.every((x:any)=>x.status==='completed'||x.status==='blocked')
-  const next=failed?'partial':complete?'completed':'queued'
+  const complete=after.every((x:any)=>x.status==='completed')
+  const next=failed||blocked?'partial':complete?'completed':'queued'
   if(next==='completed')await db.updateRun(runKey,{status:'completed',completed_at:now(),current_step:null})
-  else await db.updateRun(runKey,{status:next})
+  else await db.updateRun(runKey,{status:next,current_step:current.step_key})
   return overview(run.founder_key)
 }
 
@@ -175,12 +175,21 @@ export async function approveOpportunity(runKey:string,opportunityId:number){
 export async function schedulerTick(founderKey='primary'){
   const p=await db.policy(founderKey)
   if(!p?.enabled||!p.schedule_enabled)return{action:'disabled'}
+  const drain=async(runKey:string)=>{
+    let result:any=null
+    for(let i=0;i<AUTONOMY_STEPS.length;i++){
+      result=await advanceRun(runKey)
+      const status=result?.run?.status
+      if(status==='awaiting_approval'||status==='partial'||status==='completed')break
+    }
+    return result
+  }
   const active=await db.activeRun(founderKey)
-  if(active)return{action:'advance',run:await advanceRun(active.run_key)}
+  if(active)return{action:'advance',run:await drain(active.run_key)}
   const latest=await db.latestRun(founderKey)
   const cadence=Number(p.cadence_hours||24)
   if(latest&&Date.now()-new Date(latest.created_at).getTime()<cadence*3600000)return{action:'waiting',next_after:new Date(new Date(latest.created_at).getTime()+cadence*3600000).toISOString()}
   const run=await startRun(founderKey,'autonomous')
-  const result=await advanceRun(run.run_key)
+  const result=await drain(run.run_key)
   return{action:'started',run:result}
 }
