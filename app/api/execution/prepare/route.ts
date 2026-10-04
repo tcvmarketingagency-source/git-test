@@ -1,0 +1,5 @@
+import {NextResponse} from 'next/server'
+import {configured} from '../../../../lib/execution/storage'
+import {prepareExecution} from '../../../../lib/execution/engine'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function POST(req:Request){if(!configured())return NextResponse.json({ok:true,configured:false,message:'Server data connection is not configured.'});try{const body=await req.json();const id=Number(body.product_id);if(!Number.isFinite(id))return NextResponse.json({ok:false,error:'product_id is required'},{status:400});const mode=body.mode==='live'?'live':'dry_run';return NextResponse.json({ok:true,configured:true,...await prepareExecution(id,mode,String(body.requested_by||'founder'))})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Execution preparation failed'},{status:400})}}

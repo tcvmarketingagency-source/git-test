@@ -1,3 +1,4 @@
+
 'use client'
 import {useEffect,useMemo,useState} from 'react'
 import {ArrowLeft,CheckCircle2,ChevronDown,ChevronRight,Code2,Database,ExternalLink,FileText,Layers3,Loader2,Network,Sparkles,Target,Workflow} from 'lucide-react'
@@ -23,7 +24,7 @@ export default function ProductDetail({params}:{params:Promise<{id:string}>}){
  if(busy)return <main className="phase7-shell"><div className="p7-panel p7-empty large"><Loader2 size={24} className="spin"/><b>Loading product specification…</b><span>Retrieving Product Architect artifacts and feature backlog.</span></div></main>
  if(error||!p)return <main className="phase7-shell"><div className="p7-alert"><div><b>Product could not be loaded</b><span>{error||'Product not found.'}</span></div></div></main>
  return <main className="phase7-shell">
-  <div className="p7-detail-nav"><button className="p7-btn" onClick={()=>window.location.href='/factory'}><ArrowLeft size={13}/> Product Factory</button><span className="p7-detail-id">PRODUCT #{String(p.id).padStart(3,'0')}</span><Status value={p.status}/><button className="p7-btn" onClick={load}><Loader2 size={12} className={busy?'spin':''}/> Refresh</button></div>
+  <div className="p7-detail-nav"><button className="p7-btn" onClick={()=>window.location.href='/factory'}><ArrowLeft size={13}/> Product Factory</button><button className="p7-btn" onClick={()=>window.location.href='/execution/'+p.id}><Workflow size={13}/> Execution Layer</button><span className="p7-detail-id">PRODUCT #{String(p.id).padStart(3,'0')}</span><Status value={p.status}/><button className="p7-btn" onClick={load}><Loader2 size={12} className={busy?'spin':''}/> Refresh</button></div>
   <section className="p7-detail-hero"><div><div className="eyebrow">PRODUCT ARCHITECT / BUILD-READY SPEC</div><h1>{p.name}</h1><p>{p.thesis}</p><div className="p7-detail-tags"><span>{p.target_customer}</span><span>{p.business_model}</span><span>{p.pricing_hypothesis}</span>{p.metadata?.opportunity_title&&<span>Origin: {p.metadata.opportunity_title}</span>}</div></div><div className="p7-build-state"><small>PRODUCT FACTORY OUTPUT</small><b>{artifacts.length}</b><span>structured artifacts</span></div></section>
 
   <section className="p7-overview-grid">

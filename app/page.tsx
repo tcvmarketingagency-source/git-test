@@ -4,27 +4,31 @@
 
 
 
+
+
+
 'use client'
 import {useEffect,useMemo,useState} from "react";
-import {Activity,BarChart3,Bell,BrainCircuit,CircleDollarSign,Database,FlaskConical,Gauge,LayoutDashboard,Menu,Package,Radar,Search,Settings2,Sparkles,Target,X,Zap,ChevronRight} from "lucide-react";
+import {Activity,BarChart3,Bell,BrainCircuit,CircleDollarSign,Database,FlaskConical,Gauge,LayoutDashboard,Menu,Package,Radar,Search,Settings2,Sparkles,Target,X,Zap,ChevronRight,Workflow} from "lucide-react";
 import {data} from "./data";
 
 const nav=[
  ["Command Center",LayoutDashboard],["Daily Brief",Sparkles],["Market Pulse",Activity],["Problem Atlas",Target],
  ["Opportunity Radar",Radar],["Research Lab",FlaskConical],["Product Factory",Package],["Portfolio",BarChart3],
- ["Cost OS",CircleDollarSign],["Sources",Database],["Founder Memory",BrainCircuit],["Settings",Settings2]
+ ["Cost OS",CircleDollarSign],["Execution",Workflow],["Sources",Database],["Founder Memory",BrainCircuit],["Settings",Settings2]
 ] as const;
 
 export default function Page(){
- const [open,setOpen]=useState(false),[active,setActive]=useState("Command Center"),[q,setQ]=useState(""),[drawer,setDrawer]=useState<string|null>(null),[costLive,setCostLive]=useState<any>(null);\n useEffect(()=>{fetch("/api/cost/summary",{cache:"no-store"}).then(r=>r.json()).then(j=>j.ok&&setCostLive(j)).catch(()=>{})},[]);
+ const [open,setOpen]=useState(false),[active,setActive]=useState("Command Center"),[q,setQ]=useState(""),[drawer,setDrawer]=useState<string|null>(null),[costLive,setCostLive]=useState<any>(null);
+ useEffect(()=>{fetch("/api/cost/summary",{cache:"no-store"}).then(r=>r.json()).then(j=>j.ok&&setCostLive(j)).catch(()=>{})},[]);
  const opps=useMemo(()=>data.opportunities.filter(o=>!q||o[1].toLowerCase().includes(q.toLowerCase())||o[2].toLowerCase().includes(q.toLowerCase())),[q]);
  return <div className="app">
   <aside className={"side "+(open?"open":"")}>
     <div className="brand"><span className="mark">V</span><div><b>VentureOS</b><small>Founder Intelligence</small></div></div>
-    <div className="navlabel">Command</div>    {nav.slice(0,8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Daily Brief")window.location.href="/brief";else if(n==="Research Lab")window.location.href="/research";else if(n==="Problem Atlas")window.location.href="/problems";else if(n==="Market Pulse")window.location.href="/market";else if(n==="Opportunity Radar")window.location.href="/opportunities";else if(n==="Product Factory")window.location.href="/factory";else if(n==="Portfolio")window.location.href="/portfolio";else if(n==="Cost OS")window.location.href="/cost";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
+    <div className="navlabel">Command</div>    {nav.slice(0,8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Daily Brief")window.location.href="/brief";else if(n==="Research Lab")window.location.href="/research";else if(n==="Problem Atlas")window.location.href="/problems";else if(n==="Market Pulse")window.location.href="/market";else if(n==="Opportunity Radar")window.location.href="/opportunities";else if(n==="Product Factory")window.location.href="/factory";else if(n==="Portfolio")window.location.href="/portfolio";else if(n==="Cost OS")window.location.href="/cost";else if(n==="Execution")window.location.href="/execution";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
     <div className="navlabel control">Control</div>
-    {nav.slice(8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Cost OS")window.location.href="/cost";else if(n==="Sources")window.location.href="/sources";else if(n==="Founder Memory")window.location.href="/memory";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
-    <div className="sidefoot"><span className="dot"/> Intelligence core ready<div>Phase 9 • Cost OS + Unified Billing</div></div>
+    {nav.slice(8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Cost OS")window.location.href="/cost";else if(n==="Execution")window.location.href="/execution";else if(n==="Sources")window.location.href="/sources";else if(n==="Founder Memory")window.location.href="/memory";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
+    <div className="sidefoot"><span className="dot"/> Intelligence core ready<div>Phase 10 • Execution Layer</div></div>
   </aside>
   <main className="main">
     <header className="top">
