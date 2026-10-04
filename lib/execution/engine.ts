@@ -1,6 +1,7 @@
 import crypto from 'node:crypto'
 import { artifacts, configured, createArtifacts, createRun, createSteps, latestRun, patchProduct, product, runByKey, runs, step, steps, updateRun, updateStep } from './storage'
 import { figmaValidate, githubProvision, providerHealth, vercelDeploy, vercelStatus } from './providers'
+import { ventureosRequest } from '@/lib/tenant/rest'
 
 const STEP_DEFS = [
   { key: 'spec_validation', provider: 'ventureos' },
@@ -21,23 +22,15 @@ function jsonText(v: unknown) {
 }
 
 async function productArtifacts(productId: number) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
-  if (!url || !key) throw new Error('Supabase server credentials are not configured')
-  const api = url.replace(/\/$/, '') + '/rest/v1/ventureos_product_artifacts?select=*&product_id=eq.' + productId + '&order=artifact_type.asc,version.desc'
-  const r = await fetch(api, { headers: { apikey: key, Authorization: 'Bearer ' + key }, cache: 'no-store' })
-  if (!r.ok) throw new Error('Product artifact read failed: ' + r.status)
-  return r.json()
+  return ventureosRequest(
+    'ventureos_product_artifacts?select=*&product_id=eq.' + productId + '&order=artifact_type.asc,version.desc'
+  )
 }
 
 async function productFeatures(productId: number) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
-  if (!url || !key) throw new Error('Supabase server credentials are not configured')
-  const api = url.replace(/\/$/, '') + '/rest/v1/ventureos_product_features?select=*&product_id=eq.' + productId + '&order=phase.asc,priority.asc'
-  const r = await fetch(api, { headers: { apikey: key, Authorization: 'Bearer ' + key }, cache: 'no-store' })
-  if (!r.ok) throw new Error('Product feature read failed: ' + r.status)
-  return r.json()
+  return ventureosRequest(
+    'ventureos_product_features?select=*&product_id=eq.' + productId + '&order=phase.asc,priority.asc'
+  )
 }
 
 function buildFiles(product: any, factoryArtifacts: any[], features: any[]) {

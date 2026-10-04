@@ -1,15 +1,6 @@
-
-
-
-
-
-
-
-
-
 'use client'
 import {useEffect,useMemo,useState} from "react";
-import {Activity,BarChart3,Bell,BrainCircuit,Bot,CircleDollarSign,Database,FlaskConical,Gauge,LayoutDashboard,Menu,Package,Radar,Search,Settings2,Sparkles,Target,X,Zap,ChevronRight,Workflow} from "lucide-react";
+import {Activity,BarChart3,Bell,BrainCircuit,Bot,CircleDollarSign,Database,FlaskConical,Gauge,LayoutDashboard,Menu,Package,Radar,Search,Settings2,Sparkles,Target,X,Zap,ChevronRight,Workflow,UserRound} from "lucide-react";
 import {data} from "./data";
 
 const nav=[
@@ -19,15 +10,15 @@ const nav=[
 ] as const;
 
 export default function Page(){
- const [open,setOpen]=useState(false),[active,setActive]=useState("Command Center"),[q,setQ]=useState(""),[drawer,setDrawer]=useState<string|null>(null),[costLive,setCostLive]=useState<any>(null);
- useEffect(()=>{fetch("/api/cost/summary",{cache:"no-store"}).then(r=>r.json()).then(j=>j.ok&&setCostLive(j)).catch(()=>{})},[]);
+ const [open,setOpen]=useState(false),[active,setActive]=useState("Command Center"),[q,setQ]=useState(""),[drawer,setDrawer]=useState<string|null>(null),[costLive,setCostLive]=useState<any>(null),[account,setAccount]=useState<any>(null);
+ useEffect(()=>{fetch("/api/cost/summary",{cache:"no-store"}).then(r=>r.json()).then(j=>j.ok&&setCostLive(j)).catch(()=>{});fetch("/api/auth/context",{cache:"no-store"}).then(r=>r.json()).then(j=>j.ok&&setAccount(j)).catch(()=>{})},[]);
  const opps=useMemo(()=>data.opportunities.filter(o=>!q||o[1].toLowerCase().includes(q.toLowerCase())||o[2].toLowerCase().includes(q.toLowerCase())),[q]);
  return <div className="app">
   <aside className={"side "+(open?"open":"")}>
     <div className="brand"><span className="mark">V</span><div><b>VentureOS</b><small>Founder Intelligence</small></div></div>
     <div className="navlabel">Command</div>    {nav.slice(0,8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Daily Brief")window.location.href="/brief";else if(n==="Research Lab")window.location.href="/research";else if(n==="Problem Atlas")window.location.href="/problems";else if(n==="Market Pulse")window.location.href="/market";else if(n==="Opportunity Radar")window.location.href="/opportunities";else if(n==="Product Factory")window.location.href="/factory";else if(n==="Portfolio")window.location.href="/portfolio";else if(n==="Cost OS")window.location.href="/cost";else if(n==="Execution")window.location.href="/execution";else if(n==="Autonomous Loop")window.location.href="/autonomy";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
     <div className="navlabel control">Control</div>
-    {nav.slice(8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Cost OS")window.location.href="/cost";else if(n==="Execution")window.location.href="/execution";else if(n==="Autonomous Loop")window.location.href="/autonomy";else if(n==="Sources")window.location.href="/sources";else if(n==="Founder Memory")window.location.href="/memory";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
+    {nav.slice(8).map(([n,I])=><button key={n} className={"nav "+(active===n?"sel":"")} onClick={()=>{if(n==="Cost OS")window.location.href="/cost";else if(n==="Execution")window.location.href="/execution";else if(n==="Autonomous Loop")window.location.href="/autonomy";else if(n==="Sources")window.location.href="/sources";else if(n==="Founder Memory")window.location.href="/memory";else if(n==="Settings")window.location.href="/settings";else{setActive(n);setOpen(false)}}}><I size={16}/>{n}</button>)}
     <div className="sidefoot"><span className="dot"/> Intelligence core ready<div>Phase 11 • Autonomous Loop</div></div>
   </aside>
   <main className="main">
@@ -35,7 +26,7 @@ export default function Page(){
       <button className="icon mobile" onClick={()=>setOpen(true)}><Menu size={17}/></button>
       <div className="search"><Search size={15}/><input value={q} onChange={(e:any)=>setQ(e.target.value)} placeholder="Ask VentureOS — market, problem, company or opportunity…"/><kbd>⌘K</kbd></div>
       <button className="icon"><Bell size={16}/></button>
-      <div className="profile"><span>Founder mode</span><b>OV</b></div>
+      <div className="profile"><span>{account?.active_workspace?.workspace?.name || "Founder mode"}</span><a href="/settings" aria-label="Open settings"><b><UserRound size={14}/></b></a></div>
     </header>
     <div className="eyebrow">VENTURE INTELLIGENCE OS / {active}</div>
     <section className="hero"><div><h1>Good morning, Rohit.</h1><p>Saturday · 03 October 2026 · Last intelligence scan <strong>{data.lastScan}</strong></p></div><span className="badge"><i className="dot"/> {data.mode}</span></section>
