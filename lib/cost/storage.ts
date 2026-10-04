@@ -1,5 +1,6 @@
 
 
+
 function db(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env['SUPA'+'BASE_SECRET_KEY']||process.env['SUPA'+'BASE_SERVICE_ROLE_KEY'];if(!url||!key)return null;return{url:url.replace(/\/$/,''),key}}
 async function request(path:string,init:RequestInit={}){const d=db();if(!d)throw new Error('Supabase server credentials are not configured');const r=await fetch(d.url+'/rest/v1/'+path,{...init,headers:{apikey:d.key,Authorization:'Bearer '+d.key,'Content-Type':'application/json',...(init.headers||{})},cache:'no-store'});if(!r.ok)throw new Error('Supabase '+r.status+': '+await r.text());return r.status===204?null:r.json()}
 async function rpc(fn:string,args:Record<string,unknown>){const d=db();if(!d)throw new Error('Supabase server credentials are not configured');const r=await fetch(d.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:d.key,Authorization:'Bearer '+d.key,'Content-Type':'application/json'},body:JSON.stringify(args),cache:'no-store'});if(!r.ok)throw new Error('Supabase RPC '+r.status+': '+await r.text());return r.json()}
