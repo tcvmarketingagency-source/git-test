@@ -1,0 +1,5 @@
+import {NextResponse} from 'next/server'
+import {transitionProduct} from '../../../../../lib/portfolio/engine'
+import {configured} from '../../../../../lib/portfolio/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function POST(req:Request,{params}:{params:Promise<{id:string}>}){if(!configured())return NextResponse.json({ok:true,configured:false,message:'Server data connection is not configured.'});try{const {id}=await params;const body=await req.json();if(!body.to_status)return NextResponse.json({ok:false,error:'to_status is required'},{status:400});return NextResponse.json({ok:true,...await transitionProduct(Number(id),String(body.to_status) as any,String(body.reason||''),String(body.changed_by||'founder'))})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Transition failed'},{status:400})}}

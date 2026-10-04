@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {competitors,marketEvents,trends,evidence} from '../../../lib/market/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function GET(){if(!(process.env.NEXT_PUBLIC_SUPABASE_URL&&(process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY)))return NextResponse.json({ok:true,configured:false,trends:[],events:[],competitors:[],evidence:[],message:'Supabase server credentials are not configured.'});try{return NextResponse.json({ok:true,configured:true,trends:await trends(50),events:await marketEvents(50),competitors:await competitors(50),evidence:await evidence(50),generatedAt:new Date().toISOString()})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Market intelligence failed'},{status:500})}}

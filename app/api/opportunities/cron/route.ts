@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {processOpportunityRadar} from '../../../../lib/opportunities/processor'
+export const runtime='nodejs';export const maxDuration=60
+export async function GET(req:Request){const auth=req.headers.get('authorization'),secret=process.env.CRON_SECRET;if(secret&&auth!=='Bearer '+secret)return NextResponse.json({ok:false,error:'Unauthorized'},{status:401});if(!(process.env.NEXT_PUBLIC_SUPABASE_URL&&(process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY)))return NextResponse.json({ok:true,configured:false,phase:5,message:'Supabase server credentials are not configured.'});try{return NextResponse.json({ok:true,configured:true,phase:5,result:await processOpportunityRadar(100)})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Opportunity cron failed'},{status:500})}}

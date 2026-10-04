@@ -1,0 +1,5 @@
+import {NextResponse} from 'next/server'
+import {configured,getSnapshot,listSnapshotItems} from '../../../lib/founder-memory/storage'
+import {isoDateIST} from '../../../lib/founder-memory/engine'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function GET(req:Request){if(!configured())return NextResponse.json({ok:true,configured:false,snapshot:null,items:[],date:isoDateIST(),message:'Supabase server credentials are not configured.'});try{const u=new URL(req.url),date=u.searchParams.get('date')||isoDateIST(),founderKey=u.searchParams.get('founder')||'primary',snapshot=await getSnapshot(founderKey,date);return NextResponse.json({ok:true,configured:true,date,founderKey,snapshot,items:snapshot?await listSnapshotItems(Number(snapshot.id),100):[]})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Daily brief failed'},{status:500})}}

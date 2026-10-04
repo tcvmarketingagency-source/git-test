@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {configured,listSnapshots} from '../../../../lib/founder-memory/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function GET(req:Request){if(!configured())return NextResponse.json({ok:true,configured:false,snapshots:[],message:'Supabase server credentials are not configured.'});try{const u=new URL(req.url),limit=Math.min(Number(u.searchParams.get('limit')||30),100),founderKey=u.searchParams.get('founder')||'primary';return NextResponse.json({ok:true,configured:true,snapshots:await listSnapshots(founderKey,limit)})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Brief history failed'},{status:500})}}

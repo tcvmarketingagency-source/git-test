@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {processOpportunityRadar} from '../../../../lib/opportunities/processor'
+export const runtime='nodejs';export const maxDuration=60
+export async function POST(req:Request){if(!(process.env.NEXT_PUBLIC_SUPABASE_URL&&(process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY)))return NextResponse.json({ok:true,configured:false,phase:5,message:'Supabase server credentials are not configured.'});try{const body=await req.json().catch(()=>({}));return NextResponse.json({ok:true,configured:true,phase:5,result:await processOpportunityRadar(Number(body.limit||100))})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Opportunity processing failed'},{status:500})}}

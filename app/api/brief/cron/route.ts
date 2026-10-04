@@ -1,0 +1,5 @@
+import {NextResponse} from 'next/server'
+import {configured} from '../../../../lib/founder-memory/storage'
+import {generateDailySnapshot,isoDateIST} from '../../../../lib/founder-memory/engine'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function GET(req:Request){if(!configured())return NextResponse.json({ok:true,configured:false,message:'Supabase server credentials are not configured.'});const secret=process.env.CRON_SECRET;if(secret&&req.headers.get('authorization')!=='Bearer '+secret)return NextResponse.json({ok:false,error:'Unauthorized'},{status:401});try{return NextResponse.json({ok:true,configured:true,result:await generateDailySnapshot('primary',isoDateIST())})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Daily brief cron failed'},{status:500})}}

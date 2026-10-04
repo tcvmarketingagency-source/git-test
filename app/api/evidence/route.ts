@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {evidence,evidenceBySignal} from '../../../lib/market/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function GET(req:Request){if(!(process.env.NEXT_PUBLIC_SUPABASE_URL&&(process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY)))return NextResponse.json({ok:true,configured:false,evidence:[],message:'Supabase server credentials are not configured.'});try{const u=new URL(req.url),sid=u.searchParams.get('signal');return NextResponse.json({ok:true,configured:true,evidence:sid?await evidenceBySignal(Number(sid)):await evidence(Number(u.searchParams.get('limit')||100)),generatedAt:new Date().toISOString()})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Evidence Explorer failed'},{status:500})}}

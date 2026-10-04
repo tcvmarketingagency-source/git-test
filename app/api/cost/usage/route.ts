@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {configured,recordUsage} from '../../../../lib/cost/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function POST(req:Request){if(!configured())return NextResponse.json({ok:true,configured:false,message:'Server data connection is not configured.'});try{const body=await req.json();if(Number(body.actual_cost||0)<0)return NextResponse.json({ok:false,error:'actual_cost must be >= 0'},{status:400});return NextResponse.json({ok:true,configured:true,usage:await recordUsage(body)})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Usage record failed'},{status:400})}}

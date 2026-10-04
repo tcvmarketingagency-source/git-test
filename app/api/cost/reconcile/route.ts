@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {configured,summary} from '../../../../lib/cost/storage'
+export const runtime='nodejs';export const dynamic='force-dynamic'
+export async function POST(){if(!configured())return NextResponse.json({ok:true,configured:false,message:'Server data connection is not configured.'});try{const s=await summary();return NextResponse.json({ok:true,configured:true,reconciled_at:new Date().toISOString(),provider_cost:s.providerSpend,category_cost:s.categories,summary:s.summary})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Reconciliation failed'},{status:500})}}

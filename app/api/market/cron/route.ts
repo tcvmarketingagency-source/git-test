@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server'
+import {processMarketIntelligence} from '../../../../lib/market/processor'
+export const runtime='nodejs';export const maxDuration=60
+export async function GET(req:Request){const auth=req.headers.get('authorization'),secret=process.env.CRON_SECRET;if(secret&&auth!=='Bearer '+secret)return NextResponse.json({ok:false,error:'Unauthorized'},{status:401});try{return NextResponse.json({ok:true,phase:4,result:await processMarketIntelligence(1000)})}catch(e){return NextResponse.json({ok:false,error:e instanceof Error?e.message:'Market cron failed'},{status:500})}}
